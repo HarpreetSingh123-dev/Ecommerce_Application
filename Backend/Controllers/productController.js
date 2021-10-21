@@ -1,9 +1,10 @@
 const Product = require('../Models/productModel')
 const ErrorHandler = require('../Utils/errorHandler')
 const catchAsyncErrors = require('../Middleware/catchAsyncErrors')
+const ApiFeatures = require('../Utils/apiFeatures')
 
 //For creating new produc-->(fOR aDMIN oNLY)///////////////////////////////////
-exports.createProduct  =   catchAsyncErrors( async (req , res , next ) =>{
+exports.createProduct  =  catchAsyncErrors( async (req , res , next ) =>{
 
     
     const product =  await Product.create(req.body)
@@ -21,12 +22,24 @@ exports.createProduct  =   catchAsyncErrors( async (req , res , next ) =>{
 /// For getting all products///////////////////////////////// 
 exports.getAllProducts =  catchAsyncErrors( async(req , res ) =>{
 
-    const product = await Product.find()
+  const resultPerPage = 5 
+  const productCount = await Product.countDocuments()
+
+  console.log("request below")
+  console.log(req.query)
+  
+  const apiFeature = new  ApiFeatures(Product.find(), req.query)// for searching a particular product this method is used
+         .search()
+         .filter()
+         .pagination(resultPerPage)  // what have i done here bro!
+
+    const product = await apiFeature.query
 
      res.status(200).json({
          
         success:true,
-        product
+        product,
+        productCount
         
         })
 
