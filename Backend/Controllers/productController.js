@@ -6,7 +6,10 @@ const ApiFeatures = require('../Utils/apiFeatures')
 //For creating new produc-->(fOR aDMIN oNLY)///////////////////////////////////
 exports.createProduct  =  catchAsyncErrors( async (req , res , next ) =>{
 
-    
+     req.body.user = req.user.id 
+
+     //console.log("request check below")
+     //console.log(req)
     const product =  await Product.create(req.body)
 
         res.status(201).json({
@@ -15,12 +18,12 @@ exports.createProduct  =  catchAsyncErrors( async (req , res , next ) =>{
           })
       
 } )
-///////////////////////////////////////////////////////////
+//////////////////////////////////////////////////////////////////////////////
 
 
 
-/// For getting all products///////////////////////////////// 
-exports.getAllProducts =  catchAsyncErrors( async(req , res ) =>{
+/// For getting all products////////////////////////////////////////////////// 
+exports.getAllProducts =  catchAsyncErrors( async(req , res , next) =>{
 
   const resultPerPage = 5 
   const productCount = await Product.countDocuments()
@@ -44,9 +47,9 @@ exports.getAllProducts =  catchAsyncErrors( async(req , res ) =>{
         })
 
 })
-/////////////////////////////////////////////////////////////
+/////////////////////////////////////////////////////////////////////////////////
 
-////Update product (admin only)/////////////////////////////
+////Update product (admin only)/////////////////////////////////////////////////
 
 exports.updateProduct = catchAsyncErrors( async(req , res , next)=>{
 
@@ -74,9 +77,9 @@ exports.updateProduct = catchAsyncErrors( async(req , res , next)=>{
      
 })
 
-///////////////////////////////////////////////////////////
+/////////////////////////////////////////////////////////////////////////////////////
 
-////////Delete product (Admin only)///////////////////////
+////////Delete product (Admin only)/////////////////////////////////////////////////
 
 exports.deleteProduct = catchAsyncErrors( async(req , res , next ) =>{
 
@@ -97,9 +100,9 @@ exports.deleteProduct = catchAsyncErrors( async(req , res , next ) =>{
    })
 
 })
-////////////////////////////////////////////////////////////
+/////////////////////////////////////////////////////////////////////////////////////////
 
-////////////////Get particular product details/////////////
+////////////////Get particular product details//////////////////////////////////////////
 exports.getParticularProductDetails = catchAsyncErrors( async (req , res , next)=>{
 
     const product = await Product.findById(req.params.id);
