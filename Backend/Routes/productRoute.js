@@ -6,12 +6,12 @@ const router = express.Router();
 
 
 router.route("/products").get( isAuthenticatedUser , getAllProducts)
-router.route("/product/new").post( isAuthenticatedUser , authorizedRoles("admin"), createProduct)
-router.route('/product/:id').put(isAuthenticatedUser ,authorizedRoles("admin") , updateProduct)
+router.route("/admin/product/new").post( isAuthenticatedUser , authorizedRoles("admin"), createProduct)
+router.route('/admin/product/:id').put(isAuthenticatedUser ,authorizedRoles("admin") , updateProduct)
                             .delete(isAuthenticatedUser ,authorizedRoles("admin") , deleteProduct)
-                            .get(getParticularProductDetails)
+                           
 
-
+router.route('/product/:id').get(getParticularProductDetails)
 module.exports = router
 
 
