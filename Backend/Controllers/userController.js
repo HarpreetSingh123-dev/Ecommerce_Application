@@ -1,6 +1,7 @@
 const ErrorHandler = require('../Utils/errorHandler')
 const catchAsyncErrors = require('../Middleware/catchAsyncErrors')
 const User = require('../Models/userModel')
+const Product = require('../Models/productModel')
 const sendToken = require('../Utils/jwttoken')
 const sendEmail = require('../Utils/sendEmail.js')
 const crypto = require('crypto')
@@ -339,4 +340,143 @@ exports.deleteUser = catchAsyncErrors(async (req, res, next) => {
 
 
     })
+})
+
+// creating product review// understand it carefully
+
+exports.createProductReview = catchAsyncErrors ( async(req,res,next)=>{
+
+
+    const { rating,comment,productId } = req.body
+
+    const review = {
+
+        user:req.user._id,
+        name:req.user.name,
+        rating:Number(rating),
+        comment
+
+    }
+
+    const product = await Product.findById(productId)
+
+    const isReviewed = product.reviews.find(rev => rev.user.toString()===req.user._id.toString())
+
+    if(isReviewed){
+
+        product.reviews.forEach( rev =>{
+
+               if(rev.user.toString() === req.user._id.toString()){
+                    
+                   rev.rating = rating,
+                   rev.comment = comment
+
+               }
+
+        })
+
+    }
+
+    else{
+
+        product.reviews.push(review)
+        product.numOfReviews = product.reviews.length
+    }
+
+
+    let avg = 0
+    
+     product.reviews.forEach((rev)=>{
+
+           avg = avg+rev.rating
+
+    })
+    console.log(avg)
+    product.rating = avg/product.reviews.length
+
+
+    await product.save({validateBeforeSave:false})
+
+    res.status(200).json({
+
+        success:true
+    })
+
+})
+
+
+// Get product reviews of a single product
+
+exports.getProductReviews = catchAsyncErrors( async (req, res,next) =>{
+
+const product_Id = req.query.id
+
+const product = await Product.findById(product_Id)
+
+if(!product){
+
+    return next(new ErrorHandler("Product Not Found", 404))
+}
+
+res.status(200).json({
+
+    success:true,
+    reviews:product.reviews
+
+})
+
+})
+
+// Deleting a review
+
+exports.deleteReview = catchAsyncErrors( async(req,res,next)=>{
+
+
+    const product = await Product.findById(req.query.productId)// product id
+
+    if(!product){
+
+        return  next( new ErrorHandler("Product Not Found" , 404))
+    }
+
+    const reviews = product.reviews.filter((rev)=>{
+
+         return rev._id.toString() !== req.query.reviewId.toString()
+
+    })
+
+
+    let avg = 0
+    
+     reviews.forEach((rev)=>{
+
+           avg = avg+rev.rating
+
+    })
+    console.log(avg)
+    
+    const  rating = avg/reviews.length
+
+    const numOfReviews = reviews.length
+
+    await Product.findByIdAndUpdate(req.query.productId ,{
+        
+            reviews,
+            rating, 
+            numOfReviews,
+        
+        },{
+         
+            new:true,
+            runValidators:true,
+            useFindAndModify:false,
+        })
+
+        res.status(200).json({
+         
+            success:true,
+            message:"Review deleted"
+
+        })
+
 })

@@ -19,7 +19,7 @@ exports.isAuthenticatedUser = catchAsyncErrors(async (req, res, next)=>{
     const decodedData = jwt.verify(token , process.env.JWT_SECRET)
 
      console.log("in auth block")
-     console.log(req)
+     //console.log(req)
 
      req.user = await User.findById(decodedData.id) // current user value is stores in req.user and further this value is used to 
                                                     // see who created updated or deleated the product
