@@ -19,7 +19,7 @@ const Product = ({product}) => {
             <p>{product.name}</p>
             
             <div>
-               <ReactStars {...options}> <span>(256 Reviews)</span></ReactStars>
+               <ReactStars {...options}> </ReactStars><span>( 256 Reviews)</span>
             </div>
             <span>{product.price}</span>
         </Link>
