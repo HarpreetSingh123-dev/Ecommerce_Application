@@ -1,10 +1,14 @@
-import React, { Fragment } from 'react';
+import React, { Fragment , useEffect} from 'react';
 import { CgMouse } from 'react-icons/all';
 import Product from './Product.js'
+import Loader from '../layout/Loader/Loader'
 import MetaData from '../layout/MetaData'
+import {getProduct} from '../../actions/productAction'
+import { useSelector , useDispatch } from 'react-redux';
+import {useAlert} from 'react-alert'
 import './Home.css'
 
-
+/*
 const product = {
 
     name:"Blue Tshirt",
@@ -12,12 +16,36 @@ const product = {
     price:"$3000",
     _id:"Harpreet"
 
-}
+}*/
 
 const Home = () => {
+
+  const alert = useAlert()
+  const dispatch = useDispatch()// used to dispatch actions
+  const {loading , products , productsCount , error} = useSelector( state => state.products)// used to get state from reducer
+
+  useEffect(()=>{
+
+    if(error){
+  
+       return alert.error(error)
+          
+    }
+
+    dispatch(getProduct())
+
+  },[dispatch, error])
+
+
     return (
         
             <Fragment>
+            
+              {loading ?  (
+
+                <Loader></Loader>
+
+              ):  <Fragment>
 
               <MetaData title="Ecommerce"></MetaData>  
               <div className="banner">
@@ -36,16 +64,14 @@ const Home = () => {
 
                <div className="container" id="container">
 
-                  <Product product={product}></Product>
-                  <Product product={product}></Product>
-                  <Product product={product}></Product>
-                  <Product product={product}></Product>
-                  <Product product={product}></Product>
-                  <Product product={product}></Product>
-                  <Product product={product}></Product>
-                  <Product product={product}></Product>
-               
+                  {products && products.map( product => (
+
+                     <Product product={product} ></Product>
+                  ))}
                </div>
+            </Fragment>   }
+
+
             </Fragment>
     );
 };
