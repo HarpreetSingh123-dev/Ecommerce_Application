@@ -14,7 +14,8 @@ exports.newOrder = catchAsyncErrors( async (req,res,next)=>{
             shippingPrice , 
             totalPrice 
            } = req.body
-
+console.log("user below")
+console.log(req.user._id)
      const order = await Order.create({
 
         shippingInfo , 
