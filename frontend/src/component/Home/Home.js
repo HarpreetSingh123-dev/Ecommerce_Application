@@ -34,7 +34,7 @@ const Home = () => {
 
     dispatch(getProduct())
 
-  },[dispatch, error])
+  },[dispatch, error , alert])
 
 
     return (
@@ -64,10 +64,12 @@ const Home = () => {
 
                <div className="container" id="container">
 
+
                   {products && products.map( product => (
 
                      <Product product={product} ></Product>
-                  ))}
+                 ))} 
+
                </div>
             </Fragment>   }
 

@@ -26,7 +26,7 @@ exports.createProduct  =  catchAsyncErrors( async (req , res , next ) =>{
 exports.getAllProducts =  catchAsyncErrors( async(req , res , next) =>{
 
   //return next( new ErrorHandler("My created error" , 501))
-
+console.log("request was here")
   const resultPerPage = 8 
   const productCount = await Product.countDocuments()
 
